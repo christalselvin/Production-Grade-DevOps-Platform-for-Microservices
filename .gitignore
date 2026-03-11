@@ -1,0 +1,6 @@
+node_modules/
+target/
+*.log
+terraform.tfstate
+terraform.tfstate.backup
+.env
