@@ -1,6 +1,13 @@
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+
+# Node
 node_modules/
-target/
+
+# Logs
 *.log
-terraform.tfstate
-terraform.tfstate.backup
-.env
+
+# Build
+target/
