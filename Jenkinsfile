@@ -7,13 +7,6 @@ pipeline {
 
     stages {
 
-        stage('Checkout Code') {
-            steps {
-                git url: 'https://github.com/christalselvin/Production-Grade-DevOps-Platform-for-Microservices.git'
-                echo "Git clone completed"
-            }
-        }
-
         stage('Build Order Service (Java)') {
             steps {
                 dir('order-service') {
@@ -53,7 +46,6 @@ pipeline {
         stage('Build Docker Images') {
             steps {
                 sh 'docker-compose build'
-                echo "Docker images built"
             }
         }
 
