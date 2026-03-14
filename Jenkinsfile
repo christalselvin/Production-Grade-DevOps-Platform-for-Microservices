@@ -26,13 +26,17 @@ pipeline {
         }
 
         stage('Build Product Service (Python)') {
-            steps {
-                dir('product-service') {
-                    sh 'pip install -r requirements.txt'
-                    echo "Python done"
-                }
-            }
+    steps {
+        dir('product-service') {
+            sh '''
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -r requirements.txt
+            '''
+            echo "Python done"
         }
+    }
+}
 
         stage('Build User Service (Node)') {
             steps {
