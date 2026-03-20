@@ -274,6 +274,3 @@ Building this platform surfaced several real-world DevOps challenges:
 
 ---
 
-<div align="center">
-  <sub>If this project helped you, give it a ⭐ — it means a lot!</sub>
-</div>
