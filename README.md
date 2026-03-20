@@ -66,10 +66,10 @@ This project demonstrates how to design, provision, and operate a **fully automa
 
 | Service | Language | Port | Responsibility |
 |---------|----------|------|----------------|
-| **User Service** | Go | 8001 | Authentication, user management |
-| **Product Service** | Go | 8002 | Product catalog, inventory |
-| **Order Service** | Go | 8003 | Order lifecycle management |
-| **Payment Service** | Go | 8004 | Payment processing, transaction records |
+| **User Service** | Go | 3001 | Authentication, user management |
+| **Product Service** | Go | 3002 | Product catalog, inventory |
+| **Order Service** | Go | 3003 | Order lifecycle management |
+| **Payment Service** | Go | 3004 | Payment processing, transaction records |
 
 Each service is independently deployable, has its own Kubernetes `Deployment` and `Service`, and exposes `/health` and `/metrics` endpoints.
 
