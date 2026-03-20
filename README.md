@@ -1,214 +1,279 @@
 # 🚀 Production-Grade Cloud Native DevOps Platform for Microservices
 
-A **production-style DevOps platform** simulating how modern companies build and operate scalable cloud-native microservices systems.
+<div align="center">
 
-This project demonstrates **end-to-end DevOps implementation** including CI/CD automation, infrastructure provisioning, container orchestration, GitOps deployment, messaging systems, and monitoring.
+![Platform Status](https://img.shields.io/badge/Status-Active-brightgreen)
+![Kubernetes](https://img.shields.io/badge/Kubernetes-1.28-326CE5?logo=kubernetes&logoColor=white)
+![Terraform](https://img.shields.io/badge/Terraform-IaC-7B42BC?logo=terraform&logoColor=white)
+![Jenkins](https://img.shields.io/badge/Jenkins-CI%2FCD-D24939?logo=jenkins&logoColor=white)
+![ArgoCD](https://img.shields.io/badge/ArgoCD-GitOps-EF7B4D?logo=argo&logoColor=white)
+![AWS](https://img.shields.io/badge/AWS-Cloud-FF9900?logo=amazonaws&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-blue)
 
----
+**An end-to-end production-style DevOps ecosystem simulating real-world cloud infrastructure used in modern tech companies.**
 
-# 🏗 System Architecture
+[Architecture](#architecture) · [Microservices](#microservices) · [DevOps Stack](#devops-stack) · [Getting Started](#getting-started) · [CI/CD Pipeline](#cicd-pipeline) · [Monitoring](#monitoring) · [Lessons Learned](#lessons-learned)
 
-This platform is designed using **microservices architecture** deployed on Kubernetes with automated CI/CD pipelines and observability.
-
-### Architecture Components
-
-• Microservices (User, Product, Order, Payment)  
-• Docker containerization  
-• Kubernetes orchestration  
-• CI/CD pipelines using Jenkins  
-• Infrastructure provisioning with Terraform  
-• Server configuration with Ansible  
-• GitOps deployment using ArgoCD  
-• Messaging with RabbitMQ  
-• Artifact storage with JFrog Artifactory  
-• Monitoring using Prometheus and Grafana  
+</div>
 
 ---
 
-# 📦 Microservices
+## 📌 Overview
 
-The platform consists of the following services:
+This project demonstrates how to design, provision, and operate a **fully automated DevOps platform** for a microservices-based application on AWS. It covers the complete software delivery lifecycle — from infrastructure provisioning with Terraform, containerization with Docker, orchestration with Kubernetes, automated pipelines with Jenkins, GitOps deployments with ArgoCD, to full-stack observability with Prometheus and Grafana.
 
-| Service | Description |
-|------|-------------|
-| User Service | Handles user management and authentication |
-| Product Service | Manages product catalog |
-| Order Service | Processes customer orders |
-| Payment Service | Handles payment processing |
-
-Services communicate via **REST APIs and RabbitMQ messaging**.
+> **Goal:** Replicate the kind of infrastructure you'd find inside a real product company — not a toy example, but a platform you could actually run production workloads on.
 
 ---
 
-# 🛠 DevOps Technology Stack
+## 🏗️ Architecture
 
-| Category | Tools |
-|--------|------|
-| Source Control | GitHub |
-| CI/CD | Jenkins |
-| Containerization | Docker |
-| Orchestration | Kubernetes |
-| Infrastructure as Code | Terraform |
-| Configuration Management | Ansible |
-| GitOps | ArgoCD |
-| Messaging | RabbitMQ |
-| Artifact Repository | JFrog Artifactory |
-| Monitoring | Prometheus |
-| Observability | Grafana |
-| Cloud | AWS |
-| OS | Linux |
+```
+                          ┌─────────────────────────────────────────────┐
+                          │                  AWS Cloud                   │
+                          │                                              │
+  Developer ──push──▶  GitHub ──webhook──▶  Jenkins (CI)               │
+                          │                      │                       │
+                          │                  Build & Test                │
+                          │                      │                       │
+                          │              Docker Image ──push──▶ JFrog   │
+                          │                      │           Artifactory │
+                          │                  ArgoCD (GitOps)             │
+                          │                      │                       │
+                          │              ┌───────▼────────┐              │
+                          │              │  Kubernetes     │              │
+                          │              │  Cluster (EKS)  │              │
+                          │              │                 │              │
+                          │              │  User Service   │              │
+                          │              │  Product Svc    │──▶ RabbitMQ │
+                          │              │  Order Service  │              │
+                          │              │  Payment Svc    │              │
+                          │              └───────┬─────────┘              │
+                          │                      │                        │
+                          │              Prometheus ──▶ Grafana           │
+                          └─────────────────────────────────────────────┘
+```
 
----
-
-# ⚙ CI/CD Pipeline
-
-The CI/CD pipeline automates the application lifecycle.
-
-### Pipeline Stages
-
-1️⃣ Code Commit to GitHub  
-2️⃣ Jenkins Pipeline Trigger  
-3️⃣ Build Application  
-4️⃣ Docker Image Build  
-5️⃣ Push Image to Artifactory  
-6️⃣ Update Kubernetes manifests  
-7️⃣ Deploy via ArgoCD  
-
-This ensures **automated, reliable, and repeatable deployments**.
+**Key architectural decisions:**
+- **Microservices** communicate asynchronously via RabbitMQ to decouple services and handle traffic spikes
+- **GitOps** (ArgoCD) is the single source of truth for deployments — no manual `kubectl apply`
+- **Infrastructure is fully code-driven** — zero manual AWS console clicks after initial bootstrap
+- **Observability-first** — Prometheus scrapes all services; Grafana dashboards are provisioned as code
 
 ---
 
-# ☸ Kubernetes Deployment
+## 🧩 Microservices
 
-Applications are deployed to Kubernetes using:
+| Service | Language | Port | Responsibility |
+|---------|----------|------|----------------|
+| **User Service** | Go | 8001 | Authentication, user management |
+| **Product Service** | Go | 8002 | Product catalog, inventory |
+| **Order Service** | Go | 8003 | Order lifecycle management |
+| **Payment Service** | Go | 8004 | Payment processing, transaction records |
 
-• Deployments  
-• Services  
-• ConfigMaps  
-• Secrets  
-• Horizontal Pod Autoscaler  
-
-Kubernetes ensures **scalability, reliability, and fault tolerance**.
-
----
-
-# 🔁 GitOps with ArgoCD
-
-ArgoCD continuously monitors the Git repository and ensures the Kubernetes cluster state matches the desired configuration.
-
-Benefits:
-
-• Automated deployment  
-• Version-controlled infrastructure  
-• Easy rollback  
-• Declarative environment management  
+Each service is independently deployable, has its own Kubernetes `Deployment` and `Service`, and exposes `/health` and `/metrics` endpoints.
 
 ---
 
-# 📨 Messaging with RabbitMQ
+## 🛠️ DevOps Stack
 
-RabbitMQ enables **asynchronous communication between microservices**.
-
-Example workflow:
-
-User → Order Service → RabbitMQ → Payment Service
-
-Benefits:
-
-• Loose coupling  
-• Scalability  
-• Event-driven architecture  
-
----
-
-# 📊 Monitoring and Observability
-
-Monitoring stack includes:
-
-• **Prometheus** – Metrics collection  
-• **Grafana** – Visualization dashboards  
-
-Monitors:
-
-• CPU usage  
-• Memory usage  
-• Pod health  
-• Application metrics  
+| Layer | Tool | Purpose |
+|-------|------|---------|
+| **Source Control** | GitHub | Code hosting, PR workflows, webhooks |
+| **CI/CD** | Jenkins | Build, test, image build on every commit |
+| **Containerization** | Docker | Consistent build environments |
+| **Orchestration** | Kubernetes (EKS) | Container scheduling, scaling, self-healing |
+| **IaC** | Terraform | AWS infrastructure provisioning |
+| **Config Mgmt** | Ansible | Server configuration, bootstrap scripts |
+| **Artifact Storage** | JFrog Artifactory | Docker image registry |
+| **GitOps** | ArgoCD | Declarative, Git-driven deployments |
+| **Messaging** | RabbitMQ | Async inter-service communication |
+| **Metrics** | Prometheus | Metrics collection and alerting |
+| **Dashboards** | Grafana | Visualization and observability |
 
 ---
 
-# 🚀 Infrastructure Automation
+## ⚙️ Getting Started
 
-Infrastructure is provisioned using **Terraform**.
+### Prerequisites
 
-Resources include:
+- AWS CLI configured with appropriate IAM permissions
+- Terraform >= 1.5
+- kubectl >= 1.28
+- Docker >= 24
+- Helm >= 3.12
 
-• VPC  
-• EC2 instances  
-• Kubernetes cluster  
-• Networking resources  
+### 1. Provision AWS Infrastructure
 
-Server configuration is automated using **Ansible**.
+```bash
+cd terraform/
+terraform init
+terraform plan -out=tfplan
+terraform apply tfplan
+```
 
----
+This provisions: VPC, subnets, EKS cluster, IAM roles, ECR repositories, and RDS (if applicable).
 
-# 📁 Project Structure
+### 2. Configure Kubernetes Access
 
+```bash
+aws eks update-kubeconfig --region ap-south-1 --name devops-cluster
+kubectl get nodes  # verify cluster is healthy
+```
 
-Production-Grade-DevOps-Platform
-│
-├── microservices
-│ ├── user-service
-│ ├── product-service
-│ ├── order-service
-│ └── payment-service
-│
-├── docker
-│
-├── kubernetes
-│ ├── deployments
-│ ├── services
-│
-├── terraform
-│
-├── ansible
-│
-├── jenkins
-│
-├── monitoring
-│
-└── docs
+### 3. Deploy Core Platform Services
 
+```bash
+# Install ArgoCD
+kubectl create namespace argocd
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 
----
+# Install Prometheus + Grafana (via Helm)
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm install monitoring prometheus-community/kube-prometheus-stack -n monitoring --create-namespace
 
-# 📈 Key DevOps Features
+# Deploy RabbitMQ
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm install rabbitmq bitnami/rabbitmq -n messaging --create-namespace
+```
 
-• Production-style microservices architecture  
-• Automated CI/CD pipelines  
-• Infrastructure as Code  
-• Container orchestration  
-• GitOps deployment  
-• Messaging architecture  
-• Observability and monitoring  
-• Scalable cloud-native platform  
+### 4. Deploy Microservices via ArgoCD
+
+```bash
+kubectl apply -f argocd/application.yaml
+# ArgoCD will sync all microservices from the GitOps repo
+```
 
 ---
 
-# 🔗 Repository
+## 🔁 CI/CD Pipeline
 
-https://github.com/christalselvin/Production-Grade-DevOps-Platform-for-Microservices
+The Jenkins pipeline runs on every `git push` to `main`:
+
+```
+git push
+   │
+   ▼
+[Stage 1] Checkout & Unit Tests
+   │
+   ▼
+[Stage 2] Docker Build
+   │
+   ▼
+[Stage 3] Push to JFrog Artifactory
+   │
+   ▼
+[Stage 4] Update Helm chart values (image tag)
+   │
+   ▼
+[Stage 5] ArgoCD detects Git change → Syncs to Kubernetes
+   │
+   ▼
+[Stage 6] Health checks & deployment verification
+```
+
+**Jenkinsfile snippet:**
+```groovy
+pipeline {
+  agent any
+  stages {
+    stage('Build & Test') {
+      steps {
+        sh 'go test ./...'
+      }
+    }
+    stage('Docker Build') {
+      steps {
+        sh "docker build -t ${ARTIFACTORY_URL}/user-service:${BUILD_NUMBER} ."
+        sh "docker push ${ARTIFACTORY_URL}/user-service:${BUILD_NUMBER}"
+      }
+    }
+    stage('Update Helm Values') {
+      steps {
+        sh "sed -i 's/tag:.*/tag: ${BUILD_NUMBER}/' helm/values.yaml"
+        sh "git commit -am 'ci: bump image to ${BUILD_NUMBER}' && git push"
+      }
+    }
+  }
+}
+```
 
 ---
 
-# 👨‍💻 Author
+## 📊 Monitoring
 
-**Christal Selvin**
+Grafana dashboards are provisioned automatically via the Helm chart values. Key dashboards:
 
-DevOps Engineer | Platform Engineering | SRE
+| Dashboard | What it shows |
+|-----------|--------------|
+| **Cluster Overview** | Node CPU/memory, pod count, restarts |
+| **Service Metrics** | Request rate, error rate, latency (RED method) |
+| **RabbitMQ** | Queue depth, message throughput, consumer lag |
+| **Jenkins** | Build success rate, pipeline duration |
 
-LinkedIn  
-https://www.linkedin.com/in/christalcs4
+**Prometheus alerting rules** are defined in `monitoring/alerts/` and cover: pod crash-looping, high error rates, disk pressure, and queue backlog.
 
-GitHub  
-https://github.com/christalselvin
+---
+
+## 📁 Repository Structure
+
+```
+├── services/
+│   ├── user-service/
+│   ├── product-service/
+│   ├── order-service/
+│   └── payment-service/
+├── terraform/              # AWS infrastructure as code
+├── kubernetes/
+│   ├── deployments/        # K8s manifests per service
+│   └── namespaces/
+├── helm/                   # Helm chart for all services
+├── argocd/                 # ArgoCD Application definitions
+├── jenkins/                # Jenkinsfile and shared libraries
+├── ansible/                # Server bootstrap playbooks
+├── monitoring/
+│   ├── prometheus/         # Scrape configs, alert rules
+│   └── grafana/            # Dashboard JSON exports
+└── docs/
+    └── architecture.md
+```
+
+---
+
+## 🧠 Lessons Learned
+
+Building this platform surfaced several real-world DevOps challenges:
+
+1. **GitOps drift** — ArgoCD's self-healing is powerful but requires strict branch protection; a direct `kubectl apply` will be reverted silently.
+2. **Secret management** — Kubernetes secrets should not be stored in Git. Integrated AWS Secrets Manager / Sealed Secrets as a follow-up.
+3. **Resource limits matter** — Initial deployments had no resource limits set. Services OOM-killed each other under load. Tuning `requests` and `limits` was critical.
+4. **Prometheus cardinality** — High-cardinality labels (like user IDs) in metrics caused memory spikes. Label design needs upfront planning.
+5. **Terraform state** — Remote state in S3 with DynamoDB locking is non-negotiable for team use.
+
+---
+
+## 🚧 Roadmap
+
+- [ ] Add Istio service mesh for mTLS and traffic management
+- [ ] Implement Sealed Secrets for GitOps-safe secret management
+- [ ] Add HPA (Horizontal Pod Autoscaler) based on RabbitMQ queue depth
+- [ ] Implement canary deployments via ArgoCD Rollouts
+- [ ] Add distributed tracing with Jaeger / OpenTelemetry
+- [ ] Add a `docker-compose.yml` for local development
+
+---
+
+## 🤝 Connect
+
+**Christal Selvin** — DevOps Engineer | Platform Engineering | SRE
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-christalcs4-0A66C2?logo=linkedin)](https://www.linkedin.com/in/christalcs4)
+[![GitHub](https://img.shields.io/badge/GitHub-christalselvin-181717?logo=github)](https://github.com/christalselvin)
+[![LeetCode](https://img.shields.io/badge/LeetCode-christal4-FFA116?logo=leetcode)](https://leetcode.com/christal4/)
+[![Email](https://img.shields.io/badge/Email-christalselvin5@gmail.com-EA4335?logo=gmail)](mailto:christalselvin5@gmail.com)
+
+---
+
+<div align="center">
+  <sub>If this project helped you, give it a ⭐ — it means a lot!</sub>
+</div>
